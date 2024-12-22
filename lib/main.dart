@@ -4,14 +4,23 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'screens/chat_screen.dart';
 import 'services/chat_service.dart';
 import 'services/theme_service.dart';
+import 'services/wallpaper_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final themeService = await ThemeService.create();
+  final wallpaperService = await WallpaperService.create();
 
   runApp(
-    ChangeNotifierProvider.value(
-      value: themeService,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+          value: themeService,
+        ),
+        ChangeNotifierProvider.value(
+          value: wallpaperService,
+        ),
+      ],
       child: const ChatGPTApp(),
     ),
   );
@@ -29,9 +38,9 @@ class ChatGPTApp extends StatelessWidget {
         ColorScheme lightScheme;
         ColorScheme darkScheme;
 
-        if (themeService.useDynamicColor && lightDynamic != null && darkDynamic != null) {
-          lightScheme = lightDynamic.harmonized();
-          darkScheme = darkDynamic.harmonized();
+        if (lightDynamic != null && darkDynamic != null && themeService.useDynamicColor) {
+          lightScheme = lightDynamic;
+          darkScheme = darkDynamic;
         } else {
           lightScheme = ColorScheme.fromSeed(
             seedColor: themeService.themeColor,
@@ -49,12 +58,10 @@ class ChatGPTApp extends StatelessWidget {
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: lightScheme,
-            brightness: Brightness.light,
           ),
           darkTheme: ThemeData(
             useMaterial3: true,
             colorScheme: darkScheme,
-            brightness: Brightness.dark,
           ),
           home: FutureBuilder<String>(
             future: _getInitialSession(),

@@ -4,6 +4,13 @@ import '../widgets/chat_input.dart';
 import '../components/app_drawer.dart';
 import '../models/chat_session.dart';
 import '../services/chat_service.dart';
+import '../screens/chat_history_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/author_screen.dart';
+import '../screens/about_screen.dart';
+import 'dart:io';
+import '../services/wallpaper_service.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
   final String sessionId;
@@ -22,6 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final ChatService _chatService = ChatService();
   late ChatSession _session;
   bool _isLoading = true;
+  int _selectedDrawerIndex = 0;
 
   @override
   void initState() {
@@ -121,6 +129,18 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
+  Future<String?> _getWallpaperPath() async {
+    final wallpaperService = context.read<WallpaperService>();
+    final selectedWallpaper = wallpaperService.selectedWallpaper;
+    if (selectedWallpaper == null) return null;
+
+    if (selectedWallpaper.startsWith('bg')) {
+      return 'assets/wallpapers/$selectedWallpaper';
+    }
+
+    return await wallpaperService.getWallpaperPath(selectedWallpaper);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -166,29 +186,109 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ],
       ),
-      drawer: const AppDrawer(),
-      body: Column(
+      drawer: AppDrawer(
+        selectedIndex: _selectedDrawerIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            _selectedDrawerIndex = index;
+          });
+          Navigator.pop(context);
+
+          switch (index) {
+            case 0: // 聊天
+              break;
+            case 1: // 历史记录
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChatHistoryScreen(),
+                ),
+              );
+              break;
+            case 2: // 作者
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AuthorScreen(),
+                ),
+              );
+              break;
+            case 3: // 设置
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
+              break;
+            case 4: // 关于
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AboutScreen(),
+                ),
+              );
+              break;
+          }
+        },
+      ),
+      body: Stack(
         children: [
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.fromLTRB(
-                8.0,
-                8.0,
-                8.0,
-                MediaQuery.of(context).padding.bottom + 80.0,
-              ),
-              itemCount: _session.messages.length,
-              itemBuilder: (context, index) {
-                final message = _session.messages[index];
-                return ChatMessage(
-                  text: message.text,
-                  isUser: message.isUser,
-                );
-              },
-            ),
+          // 背景
+          Consumer<WallpaperService>(
+            builder: (context, wallpaperService, _) {
+              return FutureBuilder<String?>(
+                future: _getWallpaperPath(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData || snapshot.data == null) {
+                    return const SizedBox();
+                  }
+
+                  final path = snapshot.data!;
+                  if (path.startsWith('assets/')) {
+                    return Image.asset(
+                      path,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                    );
+                  }
+
+                  return Image.file(
+                    File(path),
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  );
+                },
+              );
+            },
           ),
-          ChatInput(onSendMessage: _handleSendMessage),
+          // 聊天内容
+          Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: EdgeInsets.fromLTRB(
+                    8.0,
+                    8.0,
+                    8.0,
+                    MediaQuery.of(context).padding.bottom + 80.0,
+                  ),
+                  itemCount: _session.messages.length,
+                  itemBuilder: (context, index) {
+                    final message = _session.messages[index];
+                    return ChatMessage(
+                      text: message.text,
+                      isUser: message.isUser,
+                    );
+                  },
+                ),
+              ),
+              ChatInput(onSendMessage: _handleSendMessage),
+            ],
+          ),
         ],
       ),
     );

@@ -3,14 +3,22 @@ import '../screens/chat_history_screen.dart';
 import '../screens/settings_screen.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+  final int selectedIndex;
+  final void Function(int) onDestinationSelected;
+
+  const AppDrawer({
+    super.key,
+    required this.selectedIndex,
+    required this.onDestinationSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return NavigationDrawer(
-      backgroundColor: colorScheme.surface,
+      selectedIndex: selectedIndex,
+      onDestinationSelected: onDestinationSelected,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 28, 16, 16),
@@ -45,50 +53,34 @@ class AppDrawer extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        ListTile(
-          leading: const Icon(Icons.chat_outlined),
-          title: const Text('聊天'),
-          selected: true,
-          onTap: () {
-            Navigator.pop(context);
-          },
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.chat_outlined),
+          selectedIcon: const Icon(Icons.chat),
+          label: const Text('聊天'),
         ),
-        ListTile(
-          leading: const Icon(Icons.history_outlined),
-          title: const Text('历史记录'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ChatHistoryScreen(),
-              ),
-            );
-          },
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.history_outlined),
+          selectedIcon: const Icon(Icons.history),
+          label: const Text('历史记录'),
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 28),
           child: Divider(),
         ),
-        ListTile(
-          leading: const Icon(Icons.settings_outlined),
-          title: const Text('设置'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SettingsScreen(),
-              ),
-            );
-          },
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.person_outline),
+          selectedIcon: const Icon(Icons.person),
+          label: const Text('作者'),
         ),
-        ListTile(
-          leading: const Icon(Icons.info_outlined),
-          title: const Text('关于'),
-          onTap: () {
-            Navigator.pop(context);
-          },
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.settings_outlined),
+          selectedIcon: const Icon(Icons.settings),
+          label: const Text('设置'),
+        ),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.info_outlined),
+          selectedIcon: const Icon(Icons.info),
+          label: const Text('关于'),
         ),
       ],
     );
