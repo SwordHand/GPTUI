@@ -1,16 +1,25 @@
-# gptui
+# Android AI Chat UI Demo
 
-A new GPTUI project.
+Welcome to the Android AI Chat UI Demo project! This project showcases a simple and interactive chat user interface built using Flutter. The demo is designed to provide a seamless experience for users looking to engage in AI-driven conversations.
+
+## Features
+
+- **Responsive UI**: The chat interface adapts to different screen sizes and orientations.
+- **AI Integration**: Simulate conversations with an AI model.
+- **User-Friendly Design**: Intuitive layout for easy navigation and interaction.
+- **Customizable Themes**: Change the appearance of the chat interface with different themes.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To get a local copy of the project up and running, follow these steps:
 
-A few resources to get you started if this is your first Flutter project:
+### Prerequisites
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Flutter SDK (version 2.0 or later)
+- Dart SDK
+- An IDE (e.g., Android Studio, Visual Studio Code)
+### Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/SwordHand/GPTUI.git
