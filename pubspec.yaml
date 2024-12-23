@@ -39,3 +39,9 @@ flutter:
     - assets/wallpapers/bg2.png
     - assets/wallpapers/bg3.png
     - assets/images/avatar.png
+    - assets/images/gpt.png
+    - assets/images/gemini.png
+    - assets/images/meta-llama.png
+    - assets/images/microsoft.png
+    - assets/images/Qwen.png
+    - assets/images/mistralai.png

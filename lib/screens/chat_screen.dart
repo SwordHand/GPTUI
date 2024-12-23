@@ -11,6 +11,7 @@ import '../screens/about_screen.dart';
 import 'dart:io';
 import '../services/wallpaper_service.dart';
 import 'package:provider/provider.dart';
+import '../screens/ai_models_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   final String sessionId;
@@ -205,7 +206,15 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               );
               break;
-            case 2: // 作者
+            case 2: // AI 模型
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AIModelsScreen(),
+                ),
+              );
+              break;
+            case 3: // 作者
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -213,7 +222,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               );
               break;
-            case 3: // 设置
+            case 4: // 设置
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -221,7 +230,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               );
               break;
-            case 4: // 关于
+            case 5: // 关于
               Navigator.push(
                 context,
                 MaterialPageRoute(

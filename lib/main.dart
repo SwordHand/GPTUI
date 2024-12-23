@@ -5,11 +5,14 @@ import 'screens/chat_screen.dart';
 import 'services/chat_service.dart';
 import 'services/theme_service.dart';
 import 'services/wallpaper_service.dart';
+import 'services/ai_model_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final themeService = await ThemeService.create();
   final wallpaperService = await WallpaperService.create();
+  final aiModelService = AIModelService();
+  await aiModelService.loadModels();
 
   runApp(
     MultiProvider(
@@ -19,6 +22,9 @@ void main() async {
         ),
         ChangeNotifierProvider.value(
           value: wallpaperService,
+        ),
+        ChangeNotifierProvider.value(
+          value: aiModelService,
         ),
       ],
       child: const ChatGPTApp(),
@@ -81,7 +87,7 @@ class ChatGPTApp extends StatelessWidget {
     final chatService = ChatService();
     final sessions = await chatService.getAllSessions();
     if (sessions.isEmpty) {
-      final session = await chatService.createSession();
+      final session = await chatService.createSession(isFirst: true);
       return session.id;
     }
     return sessions.first.id;

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/ai_model_service.dart';
 
 class ChatInput extends StatefulWidget {
   final Function(String) onSendMessage;
@@ -38,6 +40,19 @@ class _ChatInputState extends State<ChatInput> {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
+            Consumer<AIModelService>(
+              builder: (context, service, _) {
+                final model = service.selectedModel;
+                return IconButton(
+                  icon: Image.asset(
+                    model?.logo ?? service.models.first.logo,
+                    width: 24,
+                    height: 24,
+                  ),
+                  onPressed: () => _showModelSelector(context, service),
+                );
+              },
+            ),
             Expanded(
               child: TextField(
                 controller: _controller,
@@ -66,5 +81,42 @@ class _ChatInputState extends State<ChatInput> {
         ),
       ),
     );
+  }
+
+  void _showModelSelector(BuildContext context, AIModelService service) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final Offset offset = button.localToGlobal(Offset.zero);
+
+    showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx,
+        offset.dy - 200, // 向上弹出
+        offset.dx + button.size.width,
+        offset.dy,
+      ),
+      items: service.enabledModels.map((model) {
+        return PopupMenuItem<String>(
+          value: model.id,
+          child: Row(
+            children: [
+              Image.asset(
+                model.logo,
+                width: 24,
+                height: 24,
+              ),
+              const SizedBox(width: 8),
+              Expanded(child: Text(model.name)),
+              if (model.id == service.selectedModel?.id)
+                const Icon(Icons.check),
+            ],
+          ),
+        );
+      }).toList(),
+    ).then((modelId) {
+      if (modelId != null) {
+        service.setSelectedModel(modelId);
+      }
+    });
   }
 } 

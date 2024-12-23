@@ -61,8 +61,8 @@ class ChatService {
     return maxNumber + 1;
   }
 
-  Future<ChatSession> createSession() async {
-    final nextNumber = await _getNextSessionNumber();
+  Future<ChatSession> createSession({bool isFirst = false}) async {
+    final nextNumber = isFirst ? 1 : await _getNextSessionNumber();
     final session = ChatSession(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: '对话$nextNumber',

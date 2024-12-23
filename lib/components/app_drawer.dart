@@ -63,6 +63,11 @@ class AppDrawer extends StatelessWidget {
           selectedIcon: const Icon(Icons.history),
           label: const Text('历史记录'),
         ),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.smart_toy_outlined),
+          selectedIcon: const Icon(Icons.smart_toy),
+          label: const Text('AI 模型'),
+        ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 28),
           child: Divider(),
